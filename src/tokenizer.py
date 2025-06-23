@@ -4,6 +4,8 @@ import regex as re
 import multiprocessing
 import numpy as np
 from tqdm import tqdm
+import gdown
+import pickle
 
 
 class Tokenizer():
@@ -39,6 +41,40 @@ class Tokenizer():
         self.compiled_pattern = re.compile(pretokenize_pattern)
 
         self.total_freqs = total_freqs
+
+    
+    def load_dataset_specifics(self, dataset_name: str):
+        DATASET_ASSETS = {
+            'tinyStories': {
+                'vocab_path': 'https://drive.google.com/uc?id=1h3B_3NcbTy2kqZTFdHRiyEioNotU8RMR',
+                'vocab_output_path': './TinyStoriesVocab.pickle',
+                'merges_path': 'https://drive.google.com/uc?id=1Nvg8T2_N0jhqhFVWzjvcYjxP1i0nXlbt',
+                'merges_output_path': './TinyStoriesMerges.pickle',
+            },
+            'openWebText': {
+                'vocab_path': 'https://drive.google.com/uc?id=16Y48kzvjQq6_kNNJ2-ZWmn8YA84iADDU',
+                'vocab_output_path': './OwtVocab.pickle',
+                'merges_path': 'https://drive.google.com/uc?id=1ATIPiLPw6oSOgBBG1PXYdajzdmGAr0ro',
+                'merges_output_path': './OwtMerges.pickle',
+            }
+        }
+        
+        if dataset_name not in DATASET_ASSETS:
+            available = list(DATASET_ASSETS.keys())
+            raise ValueError(
+                f"Unsupported dataset: '{dataset_name}'. Supported: {available}"
+            )
+        
+        assets = DATASET_ASSETS[dataset_name]
+        
+        gdown.download(assets['vocab_path'], assets['vocab_output_path'], quiet=True)
+        gdown.download(assets['merges_path'], assets['merges_output_path'], quiet=True)
+        
+        with open(assets['vocab_output_path'], 'rb') as f:
+            self.vocab = pickle.load(f)
+
+        with open(assets['merges_output_path'], 'rb') as f:
+            self.merges = pickle.load(f)
 
 
     def _find_chunk_boundaries(
