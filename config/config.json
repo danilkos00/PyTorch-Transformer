@@ -3,7 +3,7 @@
     "vocab_size": 10000,
     "context_length": 256,
     "d_model": 512,
-    "num_layers": 12,
+    "num_layers": 8,
     "num_heads": 8,
     "rope_theta": 10000,
     "use_flash_attention": 1
