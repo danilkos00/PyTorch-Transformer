@@ -9,14 +9,14 @@ from .nn_tools import cross_entropy, clip_gradients
 from .optimizer import AdamW, CosineWithWarmup
 
 
-def train(train_data_path, val_data_path, config_path: str = '../config/config.json', checkpoint=None):
+def train(train_data_path, val_data_path, config_path: str, checkpoint=None):
     with open(config_path) as f:
         config = json.load(f)
 
     max_iters = config['training']['max_iters']
     batch_size = config['data']['batch_size']
     device = config['data']['device']
-    context_length = config['owt_model']['context_length']
+    context_length = config['model']['context_length']
     eval_interval = config['training']['eval_interval']
     grad_clip = config['training']['grad_clip']
     save_interval = config['training']['save_interval']
