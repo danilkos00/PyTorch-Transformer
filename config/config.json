@@ -21,7 +21,7 @@
     "T_c": 10000
   },
   "data": {
-    "batch_size": 32,
+    "batch_size": 64,
     "device": "cuda"
   },
   "training": {
