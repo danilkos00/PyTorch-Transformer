@@ -1,0 +1,8 @@
+torch
+einops
+tqdm
+kagglehub
+numpy
+gdown
+jaxtyping
+regex
