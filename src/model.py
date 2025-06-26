@@ -296,7 +296,6 @@ class TransformerLM(nn.Module):
 
             prob_sum = 0.0
             top_p_probs = torch.zeros_like(next_token_probs)
-            i = 0
             for i in range(len(probs)):
                 if prob_sum >= p:
                     break

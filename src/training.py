@@ -29,7 +29,7 @@ def train(train_data_path, val_data_path, config_path: str, checkpoint=None):
 
     optimizer = AdamW(model.parameters(), **config['optimizer'])
     scheduler = CosineWithWarmup(optimizer, **config['scheduler'])
-    val_loss = 0.0
+    val_loss = torch.tensor([0.0])
     accuracy = 0.0
 
     if checkpoint is not None:
@@ -56,7 +56,7 @@ def train(train_data_path, val_data_path, config_path: str, checkpoint=None):
         optimizer.step()
         scheduler.step()
 
-        pbar.set_postfix_str(f'lr={optimizer.param_groups[0]["lr"]:.4e}, train_loss={loss.item():.4f}, val_loss={val_loss:.4f}, val_accuracy={accuracy:.2f}')
+        pbar.set_postfix_str(f'lr={optimizer.param_groups[0]["lr"]:.4e}, train_loss={loss.item():.4f}, val_accuracy={accuracy:.2f}')
 
         if iteration % eval_interval == 0:
             model.eval()
