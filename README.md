@@ -5,7 +5,7 @@ This repository contains a clean, from-scratch implementation of a Transformer-b
 ## Model architecture scheme
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/danilkos00/PyTorch-Detector/main/scheme/scheme.png" width="400"/>
+  <img src="https://github.com/danilkos00/PyTorch-Transformer/blob/main/scheme/scheme.png?raw=true" width="800"/>
 </p>
 
 ## Features
