@@ -9,11 +9,12 @@ import pickle
 
 
 class Tokenizer():
-    def __init__(self, vocab=None, merges=None, special_tokens=[], pretokenize_pattern=rb"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""", total_freqs=None):
-        if vocab is None:
+    def __init__(self, dataset_name: str | None = None, special_tokens=['<|endoftext|>'], pretokenize_pattern=rb"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""", total_freqs=None):
+        if dataset_name is None:
             self.vocab = {i: bytes([i]) for i in range(256)}
+            self.merges = []
         else:
-            self.vocab = vocab
+            self.vocab, self.merges = Tokenizer.load_dataset_specifics(dataset_name)
 
         self.byte_to_id = {v: k for k, v in self.vocab.items()}
 
@@ -31,11 +32,6 @@ class Tokenizer():
                 else:
                     self.special_tokens[sp_token_bytes] = self.byte_to_id[sp_token_bytes]
 
-        if merges is None:
-            self.merges = []
-        else:
-            self.merges = merges
-
         self.merge_ranks = {pair: i for i, pair in enumerate(self.merges)}
 
         self.compiled_pattern = re.compile(pretokenize_pattern)
@@ -43,7 +39,8 @@ class Tokenizer():
         self.total_freqs = total_freqs
 
     
-    def load_dataset_specifics(self, dataset_name: str):
+    @staticmethod
+    def load_dataset_specifics(dataset_name: str):
         DATASET_ASSETS = {
             'tinyStories': {
                 'vocab_path': 'https://drive.google.com/uc?id=1h3B_3NcbTy2kqZTFdHRiyEioNotU8RMR',
@@ -71,10 +68,12 @@ class Tokenizer():
         gdown.download(assets['merges_path'], assets['merges_output_path'], quiet=True)
         
         with open(assets['vocab_output_path'], 'rb') as f:
-            self.vocab = pickle.load(f)
+            vocab = pickle.load(f)
 
         with open(assets['merges_output_path'], 'rb') as f:
-            self.merges = pickle.load(f)
+            merges = pickle.load(f)
+
+        return vocab, merges
 
 
     def _find_chunk_boundaries(
